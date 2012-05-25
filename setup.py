@@ -1,12 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+#
+# Copyright 2012 Robert Zaremba
+#
+# This module is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this module.  If not, see <http://www.gnu.org/licenses/>.
+
+'''functional.py --- function composition in python
+'''
 import codecs
 from setuptools import setup, Command  #, find_packages
 from glob import glob
 from unittest import TextTestRunner, TestLoader
 import os
 from os.path import splitext, basename, join as pjoin
-
 
 try:
     import nose
@@ -64,16 +81,16 @@ class TestCommand(Command):
 
 setup(
     name='pyfunctional',
-    version='0.0.1',
+    version='0.1.1',
     use_2to3 = True,
     cmdclass = {'test': TestCommand},
     description="Enhance python functions and object to more functional style",
     long_description=codecs.open('README.md', "r", "utf-8").read(),
     author='Robert Zaremba',
     author_email='robert.marek.zaremba@wp.eu',
-    url='https://github.com/robert-zaremba/tornado-pserver',
-    download_url="https://github.com/robert-zaremba/tornado-pserver/tarball/master",
-    license='Apache License',
+    url='https://github.com/robert-zaremba/pyfunctional',
+    download_url='https://github.com/robert-zaremba/pyfunctional/tarball/master',
+    license='GPLv3',
     keywords="tornado server asynchronous protocol tcpserver netstring",
     packages=['functional'],
     install_requires=['tornado'],
@@ -81,12 +98,10 @@ setup(
     test_suite="nose.collector",
     tests_require=['nose'],
     classifiers=[
-        'Development Status :: 4 - Beta',
-        # "Development Status :: 3 - Alpha",
-        # "Topic :: Utilities",
+        #'Development Status :: 4 - Beta',
+        "Development Status :: 3 - Alpha",
         'Intended Audience :: Developers',
-        'License :: OSI Approved :: Apache License',
-        # 'License :: OSI Approved :: Python Software Foundation License',
+        'License :: OSI Approved :: GNU General Public License (GPL)',
         "Programming Language :: Python",
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.2',
@@ -94,6 +109,6 @@ setup(
         'Operating System :: OS Independent',
         "Topic :: Software Development",
         "Topic :: Software Development :: Libraries",
-        "Topic :: System :: Networking",
+        "Topic :: Utilities",
     ],
 )

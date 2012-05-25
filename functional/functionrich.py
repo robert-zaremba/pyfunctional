@@ -16,17 +16,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this module.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import inspect
 import functools
-from copy import copy
+
 
 def _unpack(f, args):
     if isinstance(args, tuple):
         return f(*args)
     else:
         return f(args)
-
 
 
 class curry(object):
@@ -56,7 +54,7 @@ class curry(object):
         self.kwargs = kwargs
 
     def __call__(self, *args, **kwargs):
-        args_n  = self.args + args
+        args_n = self.args + args
         if self.kwargs:
             kwargs_n = self.kwargs.copy()
             kwargs_n.update(kwargs)
@@ -68,13 +66,14 @@ class curry(object):
         except TypeError as e:
             print e
             f2 = curry(self.f)
-            f2.args   = args_n
+            f2.args = args_n
             f2.kwargs = kwargs_n
             return f2
 
 
 class FunctionRich(object):
-    """This class serves as a wrapper for functions, providing operations found in functional style (composition operator and pointfree style)
+    """This class serves as a wrapper for functions, providing operations found
+    in functional style (composition operator and pointfree style)
     """
     _func = None
 
@@ -90,7 +89,8 @@ class FunctionRich(object):
 
     # string representations
     def __repr__(self):
-        return "functional.ComposableFunction("+self._func.__repr__()+")"
+        return "functional.ComposableFunction(" + self._func.__repr__()+")"
+
     def __str__(self):
         return self._func.__str__()
 
@@ -99,6 +99,12 @@ class FunctionRich(object):
         return self._func(*args)
 
     def __and__(self, arg):
+        """Accepts haskell style function call without parentheses
+
+            f = lambda x: x+1
+            f2 = FunctionRich(f)
+            f2 & 1
+        """
         if isinstance(arg, tuple):
             return self._func(*arg)
         return self._func(arg)
@@ -119,6 +125,12 @@ class FunctionRich(object):
     __lshift__ = __floordiv__
     __rshift__ = __rfloordiv__
     def __xor__(self, n):
+        """make compose self `n` times
+
+           f ^ 3 & x = f(f(f(x)))
+
+        if n is 0, then return `identity`
+        """
         if isinstance(n, int) and n > 0:
             f = self
             for i in range(n-1):
@@ -157,7 +169,7 @@ class FunctionRich(object):
 
     # unary operations
     def __pow__(self, n):
-        return FunctionRich(lambda *args: self._func(*args)**n)
+        return FunctionRich(lambda *args: self._func(*args) ** n)
     def __neg__(self):
         return FunctionRich(lambda *args: -self._func(*args))
     def __pos__(self):
@@ -184,7 +196,6 @@ class FunctionRich(object):
     def __gt__(self, f):
         f = FunctionRich(f)._func
         return FunctionRich(lambda *args: self._func(*args) > f(*args))
-
 
 
 @FunctionRich
