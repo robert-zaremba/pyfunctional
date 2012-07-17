@@ -28,7 +28,8 @@ def _unpack(f, args):
 
 
 class curry(object):
-    """make an callable object / function <f> in curry form (in terms of
+    """This is an extension of `functools.partial` object, which
+    make an callable object / function <f> in curry form (in terms of
     functional calculus).
     It behaves as normal partial, except the parital arguments
     are specified during function call
@@ -49,13 +50,12 @@ class curry(object):
     """
     def __init__(self, f, *args, **kwargs):
         self.f = f
-        self.f_spec = inspect.getargspec(f)
         self.args = args
         self.kwargs = kwargs
 
     def __call__(self, *args, **kwargs):
         args_n = self.args + args
-        if self.kwargs:
+        if self.kwargs or kwargs:
             kwargs_n = self.kwargs.copy()
             kwargs_n.update(kwargs)
         else:
@@ -63,8 +63,7 @@ class curry(object):
 
         try:
             return self.f(*args_n, **kwargs_n)
-        except TypeError as e:
-            print e
+        except TypeError:
             f2 = curry(self.f)
             f2.args = args_n
             f2.kwargs = kwargs_n
@@ -78,14 +77,14 @@ class FunctionRich(object):
     _func = None
 
     def __init__(self, f, *args):
-        if args:
-            f = functools.partial(f, *args)
         if isinstance(f, FunctionRich):
             self._func = f._func
         elif inspect.isroutine(f) or inspect.isclass(f) or isinstance(f, functools.partial):
             self._func = f
         else:
             self._func = (lambda *args: f)
+        if args and not isinstance(f, functools.partial):
+            self._func = functools.partial(self._func, *args)
 
     # string representations
     def __repr__(self):
@@ -101,13 +100,17 @@ class FunctionRich(object):
     def __and__(self, arg):
         """Accepts haskell style function call without parentheses
 
-            f = lambda x: x+1
+            f = lambda x: lambda y: x+y
             f2 = FunctionRich(f)
-            f2 & 1
+            f2 & 1 & 2     # returns 3
         """
         if isinstance(arg, tuple):
-            return self._func(*arg)
-        return self._func(arg)
+            f =  self._func(*arg)
+        else:
+            f = self._func(arg)
+        if inspect.isroutine(f) or inspect.isclass(f) or isinstance(f, functools.partial):
+            f = FunctionRich(f)
+        return f
 
     # composition
     def __mod__(self, f):
@@ -201,3 +204,4 @@ class FunctionRich(object):
 @FunctionRich
 def identity(x):
     return x
+

@@ -20,3 +20,10 @@ def test_curry2():
     x = fc2('b')                        # returns 'ab other'
     assert isinstance(fc2, curry)
     assert x == 'ab other'
+
+def test_function_rich():
+    @FunctionRich
+    def f(x):
+        return lambda y: x+y
+
+    assert (f & 3 & 1) == 4
