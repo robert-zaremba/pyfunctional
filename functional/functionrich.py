@@ -82,7 +82,7 @@ class FunctionRich(object):
         elif inspect.isroutine(f) or inspect.isclass(f) or isinstance(f, functools.partial):
             self._func = f
         else:
-            self._func = (lambda *args: f)
+            self._func = (lambda : f)
         if args and not isinstance(f, functools.partial):
             self._func = functools.partial(self._func, *args)
 
@@ -125,8 +125,10 @@ class FunctionRich(object):
     def __rfloordiv__(self, f):
         f = FunctionRich(f)._func
         return FunctionRich(lambda *args: f(self._func(*args)))
+
     __lshift__ = __floordiv__
     __rshift__ = __rfloordiv__
+
     def __xor__(self, n):
         """make compose self `n` times
 
@@ -204,4 +206,3 @@ class FunctionRich(object):
 @FunctionRich
 def identity(x):
     return x
-

@@ -15,7 +15,7 @@
 
 
 class Kind(object):
-    """Type to handle singualar objects (not collections, eg: None, int, str) as a functors"""
+    """Type to handle primitive objects (not collections, eg: None, int, str) as a functors"""
     def __new__(cls, wrap):
         if isinstance(wrap, Kind):
             return wrap
